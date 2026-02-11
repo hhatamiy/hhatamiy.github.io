@@ -257,11 +257,111 @@ document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
     });
 });
 
-// Interactive background: update glow position based on mouse
-document.addEventListener('mousemove', (e) => {
-    document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-    document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
-});
+// Neural network background: nodes + links, cursor always connects
+function initNeuralNetwork() {
+    const canvas = document.getElementById('neural-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    let mouse = { x: null, y: null };
+    let rafId = null;
+
+    const nodeCount = 160;
+    const linkDistance = 150;
+    const cursorLinkDistance = 165;
+    const nodeRadius = 1.5;
+
+    // Semi-random node positions (stable, spreads nicely)
+    const nodes = [];
+    const cols = Math.ceil(Math.sqrt(nodeCount * (width / height)));
+    const rows = Math.ceil(nodeCount / cols);
+    const stepX = width / (cols + 1);
+    const stepY = height / (rows + 1);
+    for (let i = 0; i < nodeCount; i++) {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        nodes.push({
+            x: stepX * (col + 1) + (Math.random() - 0.5) * stepX * 0.6,
+            y: stepY * (row + 1) + (Math.random() - 0.5) * stepY * 0.6
+        });
+    }
+
+    function drawLink(x1, y1, x2, y2, alpha = 1, isCursor = false) {
+        const d = Math.hypot(x2 - x1, y2 - y1);
+        const maxD = isCursor ? cursorLinkDistance : linkDistance;
+        const opacity = alpha * (1 - d / maxD) * (isCursor ? 0.95 : 0.55);
+        ctx.strokeStyle = isCursor
+            ? `rgba(56, 189, 248, ${opacity})`
+            : `rgba(148, 163, 184, ${opacity})`;
+        ctx.lineWidth = isCursor ? 1.2 : 0.8;
+        ctx.setLineDash([4, 6]);
+        ctx.lineDashOffset = -(performance.now() * 0.15) % 10;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
+
+    function drawNode(x, y, radius, isCursor = false) {
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = isCursor
+            ? 'rgba(56, 189, 248, 0.9)'
+            : 'rgba(148, 163, 184, 0.6)';
+        ctx.fill();
+        if (isCursor) {
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+    }
+
+    function frame() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Draw links between nodes
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const a = nodes[i];
+                const b = nodes[j];
+                const d = Math.hypot(b.x - a.x, b.y - a.y);
+                if (d < linkDistance) drawLink(a.x, a.y, b.x, b.y);
+            }
+        }
+
+        // Draw links from nodes to cursor and cursor node
+        if (mouse.x != null && mouse.y != null) {
+            for (const n of nodes) {
+                const d = Math.hypot(mouse.x - n.x, mouse.y - n.y);
+                if (d < cursorLinkDistance) drawLink(n.x, n.y, mouse.x, mouse.y, 1, true);
+            }
+            drawNode(mouse.x, mouse.y, nodeRadius * 2, true);
+        }
+
+        // Draw nodes
+        for (const n of nodes) drawNode(n.x, n.y, nodeRadius);
+
+        rafId = requestAnimationFrame(frame);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    });
+    document.addEventListener('mouseleave', () => {
+        mouse.x = null;
+        mouse.y = null;
+    });
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+
+    frame();
+}
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -281,5 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPersonalInfo();
     loadProjects();
     initTypingAnimation();
+    initNeuralNetwork();
 });
 
