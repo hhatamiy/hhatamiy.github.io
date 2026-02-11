@@ -169,6 +169,24 @@ nav {
     font-size: 1.125rem;
     margin-bottom: 2rem;
     opacity: 0.9;
+    min-height: 1.5em;
+}
+
+.typing-cursor {
+    display: inline-block;
+    margin-left: -0.35em;
+    animation: blink 1s infinite;
+    color: var(--accent-color);
+    font-weight: 300;
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
 }
 
 .hero-links {

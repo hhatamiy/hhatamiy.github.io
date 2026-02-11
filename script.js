@@ -1,6 +1,57 @@
 // Portfolio Script
 // Handles fetching GitHub data and rendering projects
 
+// Typing animation for hero description
+function initTypingAnimation() {
+    const typingText = document.getElementById('typing-text');
+    if (!typingText) return;
+    
+    const sentences = [
+        "Building amazing things with code",
+        "Crafting elegant solutions",
+        "Transforming ideas into reality",
+        "Writing clean, efficient code",
+        "Solving complex problems"
+    ];
+    
+    let currentSentenceIndex = 0;
+    let currentCharIndex = 0;
+    let isDeleting = false;
+    let typingSpeed = 100; // milliseconds per character
+    let deleteSpeed = 50;
+    let pauseTime = 2500; // pause after completing a sentence
+    
+    function type() {
+        const currentSentence = sentences[currentSentenceIndex];
+        
+        if (!isDeleting && currentCharIndex < currentSentence.length) {
+            // Typing forward
+            typingText.textContent = currentSentence.substring(0, currentCharIndex + 1);
+            currentCharIndex++;
+            setTimeout(type, typingSpeed);
+        } else if (!isDeleting && currentCharIndex === currentSentence.length) {
+            // Finished typing, pause then start deleting
+            setTimeout(() => {
+                isDeleting = true;
+                type();
+            }, pauseTime);
+        } else if (isDeleting && currentCharIndex > 0) {
+            // Deleting backward
+            currentCharIndex--;
+            typingText.textContent = currentSentence.substring(0, currentCharIndex);
+            setTimeout(type, deleteSpeed);
+        } else if (isDeleting && currentCharIndex === 0) {
+            // Finished deleting, move to next sentence
+            isDeleting = false;
+            currentSentenceIndex = (currentSentenceIndex + 1) % sentences.length;
+            setTimeout(type, 200); // Brief pause before starting next sentence
+        }
+    }
+    
+    // Start typing animation
+    type();
+}
+
 // Load personal information
 function loadPersonalInfo() {
     const personal = config.personal;
@@ -8,7 +59,7 @@ function loadPersonalInfo() {
     // Hero section
     document.getElementById('hero-name').textContent = personal.name;
     document.getElementById('hero-title').textContent = personal.title;
-    document.getElementById('hero-description').textContent = personal.description;
+    // Description is handled by typing animation
     
     // About section
     document.getElementById('about-text').textContent = personal.about;
@@ -229,5 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing portfolio...');
     loadPersonalInfo();
     loadProjects();
+    initTypingAnimation();
 });
 
