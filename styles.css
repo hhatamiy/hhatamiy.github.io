@@ -265,6 +265,12 @@ section h2 {
     border-color: rgba(59, 130, 246, 0.9);
 }
 
+.project-card-type.bot {
+    background-color: rgba(133, 77, 14, 0.55);
+    color: #fef9c3;
+    border-color: rgba(234, 179, 8, 0.95);
+}
+
 .project-card-description {
     color: var(--text-secondary);
     margin-bottom: 1.5rem;
