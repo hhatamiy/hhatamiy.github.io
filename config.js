@@ -51,7 +51,7 @@ const config = {
                 name: "Brightspace / Canvas Grade Checker",
                 description: "A web app that checks the grades of the students in the Brightspace / Canvas platform.",
                 type: "extension",
-                "url": "https://grade-checker.vercel.app/",
+                "url": "https://github.com/hhatamiy/grade-checker",
             },
         ]
     }

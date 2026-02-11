@@ -14,14 +14,12 @@ function loadPersonalInfo() {
     document.getElementById('about-text').textContent = personal.about;
     
     // Contact section
-    document.getElementById('contact-email').href = `mailto:${personal.email}`;
-    document.getElementById('contact-email').textContent = personal.email;
+    const emailLink = document.getElementById('contact-email');
+    emailLink.href = `mailto:${personal.email}`;
+    emailLink.setAttribute('title', personal.email);
+    emailLink.setAttribute('aria-label', `Email: ${personal.email}`);
     document.getElementById('contact-github').href = `https://github.com/${personal.github}`;
-    document.getElementById('contact-linkedin').href = `https://linkedin.com/in/${personal.linkedin}`;
-    
-    // Hero links
-    document.getElementById('github-link').href = `https://github.com/${personal.github}`;
-    document.getElementById('linkedin-link').href = `https://linkedin.com/in/${personal.linkedin}`;
+    document.getElementById('contact-linkedin').href = `https://www.linkedin.com/in/${personal.linkedin}`;
     
     // Footer
     document.getElementById('footer-name').textContent = personal.name;
@@ -76,8 +74,36 @@ function renderProjectCard(project) {
     const card = document.createElement('div');
     card.className = 'project-card';
     
-    const typeClass = project.type === 'github' ? 'github' : 'site';
-    const typeLabel = project.type === 'github' ? 'GitHub' : project.type || 'Project';
+    // Map project.type to specific tag styles and labels
+    const typeClass = (() => {
+        switch (project.type) {
+            case 'github':
+                return 'github';
+            case 'site':
+                return 'site';
+            case 'extension':
+                return 'extension';
+            case 'bot':
+                return 'bot';
+            default:
+                return 'site';
+        }
+    })();
+
+    const typeLabel = (() => {
+        switch (project.type) {
+            case 'github':
+                return 'GitHub';
+            case 'site':
+                return 'Site';
+            case 'extension':
+                return 'Extension';
+            case 'bot':
+                return 'Bot';
+            default:
+                return project.type || 'Project';
+        }
+    })();
     
     card.innerHTML = `
         <div class="project-card-header">
@@ -178,6 +204,12 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             });
         }
     });
+});
+
+// Interactive background: update glow position based on mouse
+document.addEventListener('mousemove', (e) => {
+    document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+    document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
 });
 
 // Initialize on page load
