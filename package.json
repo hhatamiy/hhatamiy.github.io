@@ -4,7 +4,8 @@
   "description": "Personal portfolio website",
   "scripts": {
     "start": "npx http-server -p 8080 -o",
-    "serve": "npx http-server -p 8080"
+    "serve": "npx http-server -p 8080",
+    "dev": "npx live-server --port=8080 --open=/index.html"
   },
   "keywords": ["portfolio", "github-pages"],
   "author": "",

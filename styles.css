@@ -1,13 +1,22 @@
 :root {
-    --primary-color: #6366f1;
-    --secondary-color: #8b5cf6;
-    --text-primary: #1f2937;
-    --text-secondary: #6b7280;
-    --bg-primary: #ffffff;
-    --bg-secondary: #f9fafb;
-    --border-color: #e5e7eb;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    /* Core brand colors - PSG inspired */
+    --primary-color: #004170;   /* PSG navy */
+    --secondary-color: #da1a32; /* PSG red */
+    --accent-color: #38bdf8;    /* Cyan dev accent */
+
+    /* Text colors on dark surfaces */
+    --text-primary: #e5e7eb;    /* Light gray */
+    --text-secondary: #9ca3af;  /* Muted gray */
+
+    /* Surface colors */
+    --bg-primary: #020617;      /* App background (very dark blue/black) */
+    --bg-secondary: #02081f;    /* Section background */
+    --card-bg: #0b1120;         /* Card/panel background */
+
+    /* Borders & elevation */
+    --border-color: #1f2937;
+    --shadow: 0 4px 10px rgba(15, 23, 42, 0.7);
+    --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.9);
 }
 
 * {
@@ -31,7 +40,7 @@ body {
 
 /* Header & Navigation */
 header {
-    background-color: var(--bg-primary);
+    background-color: rgba(2, 6, 23, 0.96);
     box-shadow: var(--shadow);
     position: sticky;
     top: 0;
@@ -68,18 +77,23 @@ nav {
     color: var(--text-primary);
     font-weight: 500;
     transition: color 0.3s ease;
+    letter-spacing: 0.03em;
 }
 
 .nav-links a:hover {
-    color: var(--primary-color);
+    color: var(--accent-color);
 }
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(218, 26, 50, 0.3), transparent 55%),
+        linear-gradient(135deg, #001b5e 0%, var(--secondary-color) 100%);
     color: white;
     padding: 6rem 0;
     text-align: center;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.8);
 }
 
 .hero-content {
@@ -103,7 +117,7 @@ nav {
 .hero-description {
     font-size: 1.125rem;
     margin-bottom: 2rem;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .hero-links {
@@ -120,31 +134,34 @@ nav {
     border-radius: 0.5rem;
     text-decoration: none;
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     border: 2px solid transparent;
+    cursor: pointer;
 }
 
 .btn-primary {
-    background-color: white;
-    color: var(--primary-color);
+    background-color: var(--accent-color);
+    color: var(--bg-primary);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.7), 0 0 20px rgba(56, 189, 248, 0.45);
 }
 
 .btn-primary:hover {
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: #0ea5e9;
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 0 30px rgba(56, 189, 248, 0.7);
 }
 
 .btn-secondary {
     background-color: transparent;
-    color: white;
-    border-color: white;
+    color: var(--accent-color);
+    border-color: var(--accent-color);
 }
 
 .btn-secondary:hover {
-    background-color: white;
-    color: var(--primary-color);
+    background-color: rgba(15, 23, 42, 0.8);
+    color: var(--accent-color);
     transform: translateY(-2px);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 0 24px rgba(56, 189, 248, 0.6);
 }
 
 /* Sections */
@@ -185,19 +202,22 @@ section h2 {
 }
 
 .project-card {
-    background-color: var(--bg-primary);
+    background-color: var(--card-bg);
     border-radius: 0.75rem;
     padding: 2rem;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(148, 163, 184, 0.2);
     display: flex;
     flex-direction: column;
+    position: relative;
+    overflow: hidden;
 }
 
 .project-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
+    border-color: rgba(56, 189, 248, 0.55);
 }
 
 .project-card-header {
@@ -221,18 +241,28 @@ section h2 {
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: uppercase;
-    background-color: var(--bg-secondary);
+    background-color: rgba(15, 23, 42, 0.8);
     color: var(--text-secondary);
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 .project-card-type.github {
-    background-color: #f3f4f6;
-    color: #374151;
+    background-color: rgba(15, 23, 42, 0.95);
+    color: #e5e7eb;
+    border-color: rgba(56, 189, 248, 0.8);
 }
 
 .project-card-type.site {
-    background-color: #dbeafe;
-    color: #1e40af;
+    background-color: rgba(127, 29, 29, 0.4);
+    color: #fecaca;
+    border-color: rgba(220, 38, 38, 0.8);
+}
+
+.project-card-type.extension {
+    background-color: rgba(30, 64, 175, 0.5);
+    color: #bfdbfe;
+    border-color: rgba(59, 130, 246, 0.9);
 }
 
 .project-card-description {
@@ -258,23 +288,27 @@ section h2 {
 }
 
 .project-link {
-    background-color: var(--primary-color);
-    color: white;
+    background-color: var(--accent-color);
+    color: var(--bg-primary);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.7);
 }
 
 .project-link:hover {
-    background-color: var(--secondary-color);
+    background-color: #0ea5e9;
     transform: translateY(-2px);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 0 20px rgba(56, 189, 248, 0.7);
 }
 
 .project-repo {
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid rgba(148, 163, 184, 0.4);
 }
 
 .project-repo:hover {
-    background-color: var(--border-color);
+    background-color: rgba(15, 23, 42, 0.8);
+    color: var(--accent-color);
+    border-color: rgba(56, 189, 248, 0.7);
 }
 
 .project-stats {
@@ -283,6 +317,7 @@ section h2 {
     margin-top: 1rem;
     font-size: 0.875rem;
     color: var(--text-secondary);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 .project-stat {
@@ -302,8 +337,10 @@ section h2 {
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    background-color: var(--bg-secondary);
-    color: var(--text-secondary);
+    background-color: rgba(15, 23, 42, 0.9);
+    color: var(--accent-color);
+    border: 1px solid rgba(56, 189, 248, 0.6);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 /* Contact Section */
@@ -331,26 +368,27 @@ section h2 {
     text-decoration: none;
     font-weight: 500;
     background-color: var(--primary-color);
-    color: white;
+    color: var(--text-primary);
+    border: 1px solid rgba(56, 189, 248, 0.6);
     transition: all 0.3s ease;
 }
 
 .contact-link:hover {
     background-color: var(--secondary-color);
     transform: translateY(-2px);
-    box-shadow: var(--shadow);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 0 20px rgba(56, 189, 248, 0.6);
 }
 
 /* Footer */
 footer {
-    background-color: var(--text-primary);
-    color: white;
+    background-color: #020617;
+    color: var(--text-secondary);
     padding: 2rem 0;
     text-align: center;
 }
 
 footer p {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(148, 163, 184, 0.9);
 }
 
 /* Loading State */

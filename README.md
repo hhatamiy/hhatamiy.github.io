@@ -36,8 +36,9 @@ In `config.js`, add your repository names to the `githubRepos` array:
 
 ```javascript
 githubRepos: [
-    "yourusername/repo-name",
-    "yourusername/another-repo"
+    "hhatamiy/WCS",
+    "hhatamiy/grade-checker"
+    "hhatamiy/soccer-rules"
 ]
 ```
 

@@ -1,9 +1,6 @@
 // Portfolio Script
 // Handles fetching GitHub data and rendering projects
 
-// Set current year in footer
-document.getElementById('current-year').textContent = new Date().getFullYear();
-
 // Load personal information
 function loadPersonalInfo() {
     const personal = config.personal;
@@ -33,16 +30,29 @@ function loadPersonalInfo() {
 // Fetch GitHub repository data
 async function fetchGitHubRepo(repoName) {
     try {
+        console.log(`Fetching ${repoName}...`);
         const response = await fetch(`https://api.github.com/repos/${repoName}`);
         if (!response.ok) {
-            throw new Error(`Failed to fetch ${repoName}`);
+            if (response.status === 404) {
+                console.warn(`Repository ${repoName} not found or is private`);
+            } else {
+                console.error(`Failed to fetch ${repoName}: ${response.status} ${response.statusText}`);
+            }
+            return null;
         }
         const data = await response.json();
         
         // Fetch languages
-        const languagesResponse = await fetch(data.languages_url);
-        const languagesData = await languagesResponse.json();
-        const languages = Object.keys(languagesData);
+        let languages = [];
+        try {
+            const languagesResponse = await fetch(data.languages_url);
+            if (languagesResponse.ok) {
+                const languagesData = await languagesResponse.json();
+                languages = Object.keys(languagesData);
+            }
+        } catch (langError) {
+            console.warn(`Could not fetch languages for ${repoName}:`, langError);
+        }
         
         return {
             name: data.name,
@@ -89,14 +99,19 @@ function renderProjectCard(project) {
             </div>
         ` : ''}
         <div class="project-card-footer">
-            ${project.homepage || project.url ? `
-                <a href="${project.homepage || project.url}" class="project-link" target="_blank" rel="noopener noreferrer">
-                    ${project.type === 'github' ? 'View Project' : 'Visit Site'}
+            ${project.homepage ? `
+                <a href="${project.homepage}" class="project-link" target="_blank" rel="noopener noreferrer">
+                    View Project
                 </a>
             ` : ''}
-            ${project.repo || (project.type === 'github' && project.url) ? `
-                <a href="${project.repo || project.url}" class="project-repo" target="_blank" rel="noopener noreferrer">
-                    ${project.type === 'github' ? 'View Code' : 'View Repo'}
+            ${project.url ? `
+                <a href="${project.url}" class="project-repo" target="_blank" rel="noopener noreferrer">
+                    ${project.type === 'github' ? 'View Code' : (project.repo ? 'View Repo' : 'View Project')}
+                </a>
+            ` : ''}
+            ${project.repo && project.type !== 'github' ? `
+                <a href="${project.repo}" class="project-repo" target="_blank" rel="noopener noreferrer">
+                    View Repo
                 </a>
             ` : ''}
         </div>
@@ -108,20 +123,28 @@ function renderProjectCard(project) {
 // Load and render all projects
 async function loadProjects() {
     const projectsGrid = document.getElementById('projects-grid');
+    if (!projectsGrid) {
+        console.error('Projects grid element not found');
+        return;
+    }
+    
     projectsGrid.innerHTML = '<div class="loading">Loading projects...</div>';
     
     const projects = [];
     
     // Fetch GitHub repositories
-    if (config.projects.githubRepos && config.projects.githubRepos.length > 0) {
+    if (config && config.projects && config.projects.githubRepos && config.projects.githubRepos.length > 0) {
+        console.log(`Fetching ${config.projects.githubRepos.length} GitHub repositories...`);
         const githubProjects = await Promise.all(
             config.projects.githubRepos.map(repo => fetchGitHubRepo(repo))
         );
-        projects.push(...githubProjects.filter(p => p !== null));
+        const validProjects = githubProjects.filter(p => p !== null);
+        console.log(`Successfully loaded ${validProjects.length} GitHub repositories`);
+        projects.push(...validProjects);
     }
     
     // Add manual projects
-    if (config.projects.manual && config.projects.manual.length > 0) {
+    if (config && config.projects && config.projects.manual && config.projects.manual.length > 0) {
         projects.push(...config.projects.manual.map(project => ({
             ...project,
             type: project.type || 'other'
@@ -130,7 +153,7 @@ async function loadProjects() {
     
     // Render projects
     if (projects.length === 0) {
-        projectsGrid.innerHTML = '<div class="loading">No projects configured yet. Edit config.js to add your projects!</div>';
+        projectsGrid.innerHTML = '<div class="loading">No projects found. Check the browser console for errors or edit config.js to add your projects!</div>';
         return;
     }
     
@@ -139,6 +162,8 @@ async function loadProjects() {
         const card = renderProjectCard(project);
         projectsGrid.appendChild(card);
     });
+    
+    console.log(`Rendered ${projects.length} projects`);
 }
 
 // Smooth scrolling for navigation links
@@ -157,6 +182,19 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
+    // Set current year in footer
+    const currentYearEl = document.getElementById('current-year');
+    if (currentYearEl) {
+        currentYearEl.textContent = new Date().getFullYear();
+    }
+    
+    // Check if config is loaded
+    if (typeof config === 'undefined') {
+        console.error('Config not loaded! Make sure config.js is loaded before script.js');
+        return;
+    }
+    
+    console.log('Initializing portfolio...');
     loadPersonalInfo();
     loadProjects();
 });

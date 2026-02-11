@@ -4,8 +4,8 @@
 const config = {
     // Personal Information
     personal: {
-        name: "Hossein",
-        title: "Software Developer",
+        name: "Hossein Hatami",
+        title: "My Portfolio",
         description: "Building amazing things with code",
         about: "Purdue CS Student Graduating in Spring 2028. Aspiring Software Developer",
         email: "hhatamiy@gmail.com",
@@ -18,10 +18,10 @@ const config = {
         // GitHub repositories to fetch and display
         // Add your repository names here (format: "username/repo-name")
         githubRepos: [
-            // Example: "hhatamiy/awesome-project",
-            // Add your repos here
+            "hhatamiy/WCS",
+            "hhatamiy/Brightspace / Canvas Grade Checker",
+            "hhatamiy/soccer-rules"
         ],
-
         // Manual projects (sites, apps, etc. that aren't on GitHub)
         // You can add any project here with custom information
         manual: [
@@ -34,6 +34,25 @@ const config = {
             //     repo: "https://github.com/username/repo", // Optional
             //     languages: ["React", "Tailwind CSS", "JavaScript"]
             // },
+
+            {
+                name: "World Cup Simulator/Predictor",
+                description: "A web app that simulates the World Cup and allows users to predict the winner based on the teams' performance.",
+                type: "site",
+                "url": "https://worldcupsim26.vercel.app/simulator",
+            },
+            {
+                name: "Soccer Rules",
+                description: "A web app that displays the rules of soccer.",
+                type: "site",
+                "url": "https://soccer-rules.vercel.app/",
+            },
+            {
+                name: "Brightspace / Canvas Grade Checker",
+                description: "A web app that checks the grades of the students in the Brightspace / Canvas platform.",
+                type: "extension",
+                "url": "https://grade-checker.vercel.app/",
+            },
         ]
     }
 };
