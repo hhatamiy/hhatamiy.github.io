@@ -279,12 +279,15 @@ function initNeuralNetwork() {
     const rows = Math.ceil(nodeCount / cols);
     const stepX = width / (cols + 1);
     const stepY = height / (rows + 1);
+    const baseSpeed = 0.4;
     for (let i = 0; i < nodeCount; i++) {
         const col = i % cols;
         const row = Math.floor(i / cols);
         nodes.push({
             x: stepX * (col + 1) + (Math.random() - 0.5) * stepX * 0.6,
-            y: stepY * (row + 1) + (Math.random() - 0.5) * stepY * 0.6
+            y: stepY * (row + 1) + (Math.random() - 0.5) * stepY * 0.6,
+            vx: (Math.random() - 0.5) * baseSpeed * 2,
+            vy: (Math.random() - 0.5) * baseSpeed * 2
         });
     }
 
@@ -321,6 +324,16 @@ function initNeuralNetwork() {
 
     function frame() {
         ctx.clearRect(0, 0, width, height);
+
+        // Update node positions
+        for (const n of nodes) {
+            n.x += n.vx;
+            n.y += n.vy;
+            if (n.x < 0 || n.x > width) n.vx *= -1;
+            if (n.y < 0 || n.y > height) n.vy *= -1;
+            n.x = Math.max(0, Math.min(width, n.x));
+            n.y = Math.max(0, Math.min(height, n.y));
+        }
 
         // Draw links between nodes
         for (let i = 0; i < nodes.length; i++) {
