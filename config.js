@@ -12,7 +12,12 @@ const config = {
         github: "hhatamiy",
         linkedin: "hhatamiy"
     },
-
+    // Skills Configuration
+    skills: {
+        languages: ["Python", "JavaScript", "HTML", "CSS", "SQL"],
+        frameworks: ["React", "Node.js", "Express", "Django", "Flask"],
+        tools: ["Git", "GitHub", "Docker", "AWS", "Azure"],
+    },
     // Projects Configuration
     projects: {
         // GitHub repositories to fetch and display
