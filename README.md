@@ -108,8 +108,10 @@ printed on a stylized kit silhouette. Edit the name/number, or delete a
 - This design is a personal fan project inspired by Paris Saint-Germain's
   colors, crest style, and current squad — it is not affiliated with or
   endorsed by the club.
-- The star icon used throughout (background pattern, logo, bullet points)
-  is defined once at `assets/star.svg` — edit that file to change the
-  shape everywhere it's used.
+- The star icon used for bullet points and the "Allez Paris" stat is
+  defined at `assets/star.svg`. The hero background pattern and crest
+  logo draw their own copies of a simple star shape inline (for tiling
+  performance), so a shape change there needs updating in `styles.css`
+  and `index.html`/`assets/favicon.svg` too.
 - Colors and fonts are defined as CSS variables at the top of `styles.css`
   under `:root` if you want to adjust the palette.
