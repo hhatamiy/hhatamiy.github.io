@@ -3,60 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio - Your Name</title>
+    <title>Hossein Hatami — Portfolio</title>
+    <meta name="description" content="Hossein Hatami — Computer Science student at Purdue University. Software engineer, security analyst, and PSG supporter.">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <canvas id="neural-canvas" class="neural-canvas" aria-hidden="true"></canvas>
     <header>
         <nav>
             <div class="nav-container">
-                <div class="logo">Portfolio</div>
-                <ul class="nav-links">
-                    <li><a href="#projects">Projects</a></li>
+                <a href="#top" class="logo">
+                    <span class="crest" aria-hidden="true">
+                        <svg viewBox="0 0 48 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g transform="translate(15,0) scale(0.18)">
+                                <path fill-rule="evenodd" fill="var(--gold)" d="M50,4 L64,33 L98,25 L67,47 L82,98 L18,98 L33,47 L2,25 L36,33 Z M37,98 L37,68 C37,54 63,54 63,68 L63,98 Z"/>
+                            </g>
+                            <circle cx="24" cy="36" r="18" fill="var(--navy)" stroke="var(--white)" stroke-width="2"/>
+                            <circle cx="24" cy="36" r="13" fill="var(--red)" opacity="0.15"/>
+                            <text x="24" y="41" text-anchor="middle" font-family="Anton, sans-serif" font-size="14" fill="var(--white)">HH</text>
+                        </svg>
+                    </span>
+                    <span class="logo-text">Hatami</span>
+                </a>
+                <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+                <ul class="nav-links" id="nav-links">
                     <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#experience">Experience</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#education">Education</a></li>
+                    <li><a href="#contact" class="nav-cta">Contact</a></li>
                 </ul>
             </div>
         </nav>
     </header>
 
-    <main>
+    <main id="top">
+        <!-- HERO -->
         <section id="hero" class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <h1 id="hero-name">Your Name</h1>
-                    <p id="hero-title" class="hero-subtitle">Software Developer</p>
-                    <p id="hero-description" class="hero-description"><span id="typing-text"></span><span class="typing-cursor">|</span></p>
+            <div class="hechter-stripe" aria-hidden="true"></div>
+            <div class="star-field" aria-hidden="true"></div>
+            <div class="container hero-inner">
+                <p class="hero-kicker">Computer Science &middot; Purdue University</p>
+                <h1 id="hero-name" class="hero-name">
+                    <span id="hero-name-text">Your Name</span><span class="squad-number" id="hero-squad-number">10</span>
+                </h1>
+                <p id="hero-role" class="hero-role">Software Developer</p>
+                <p id="hero-tagline" class="hero-tagline">Add your tagline here.</p>
+                <div class="hero-actions">
+                    <a href="#projects" class="btn btn-primary">View Projects</a>
+                    <a href="#" id="hero-resume-link" class="btn btn-ghost">Download Resume</a>
                 </div>
+            </div>
+            <div class="hero-fade" aria-hidden="true"></div>
+        </section>
+
+        <!-- MATCHDAY STAT STRIP -->
+        <section class="stat-strip">
+            <div class="container stat-strip-inner">
+                <div class="stat"><span class="stat-value" id="stat-internships">0</span><span class="stat-label">Internships</span></div>
+                <div class="stat"><span class="stat-value" id="stat-gradyear">—</span><span class="stat-label">Grad Year</span></div>
+                <div class="stat"><span class="stat-value" id="stat-projects">0</span><span class="stat-label">Projects</span></div>
+                <div class="stat"><span class="stat-value"><span class="star-icon" aria-hidden="true"></span></span><span class="stat-label">Allez Paris</span></div>
             </div>
         </section>
 
-        <section id="projects" class="projects">
-            <div class="container">
-                <h2>Projects</h2>
-                <div id="projects-grid" class="projects-grid">
-                    <!-- Projects will be dynamically loaded here -->
-                </div>
-            </div>
-        </section>
-
+        <!-- ABOUT -->
         <section id="about" class="about">
             <div class="container">
-                <h2>About Me</h2>
-                <div class="about-content">
-                    <p id="about-text">Add your about section here.</p>
+                <h2 class="section-title"><span class="section-kicker">01</span>Player Profile</h2>
+                <div class="about-grid">
+                    <div class="about-text" id="about-text"></div>
+                    <div class="about-card">
+                        <div class="jersey-sticker" id="about-sticker" aria-hidden="true"></div>
+                        <div class="about-card-header">
+                            <span class="star-icon" aria-hidden="true"></span>
+                            Scouting Report
+                        </div>
+                        <dl class="about-attributes" id="about-attributes"></dl>
+                    </div>
                 </div>
             </div>
         </section>
 
+        <!-- EXPERIENCE -->
+        <section id="experience" class="experience">
+            <div class="container">
+                <h2 class="section-title"><span class="section-kicker">02</span>Career Lineup</h2>
+                <div class="lineup" id="experience-list"></div>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects" class="projects">
+            <div class="container">
+                <h2 class="section-title"><span class="section-kicker">03</span>Projects</h2>
+                <p class="section-subtitle">Screenshots and demos below — swap them anytime, see README.md.</p>
+                <div id="projects-grid" class="projects-grid"></div>
+            </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills" class="skills">
+            <div class="container">
+                <h2 class="section-title"><span class="section-kicker">04</span>Kit &amp; Toolkit</h2>
+                <div id="skills-grid" class="skills-grid"></div>
+            </div>
+        </section>
+
+        <!-- EDUCATION -->
+        <section id="education" class="education">
+            <div class="container">
+                <h2 class="section-title"><span class="section-kicker">05</span>Academy</h2>
+                <div class="education-card">
+                    <div class="jersey-sticker" id="education-sticker" aria-hidden="true"></div>
+                    <div class="education-header">
+                        <div>
+                            <h3 id="edu-school">Purdue University</h3>
+                            <p id="edu-degree">B.S. in Computer Science</p>
+                        </div>
+                        <span class="education-grad" id="edu-grad">Expected May 2028</span>
+                    </div>
+                    <div class="education-body">
+                        <div>
+                            <h4>Relevant Coursework</h4>
+                            <ul id="edu-coursework" class="chip-list"></ul>
+                        </div>
+                        <div>
+                            <h4>Off the Pitch</h4>
+                            <ul id="edu-extracurriculars" class="plain-list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
         <section id="contact" class="contact">
             <div class="container">
-                <h2>Get In Touch</h2>
-                <p id="contact-text">Feel free to reach out!</p>
+                <h2 class="section-title section-title-center"><span class="section-kicker">06</span>Full Time</h2>
+                <p id="contact-text" class="contact-text">Open to new opportunities — feel free to reach out.</p>
                 <div class="contact-links">
                     <a href="#" id="contact-email" class="contact-link icon-btn" aria-label="Email" title="Email">
                         <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
@@ -68,13 +159,15 @@
                         <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                     </a>
                 </div>
+                <p class="location" id="contact-location"></p>
             </div>
         </section>
     </main>
 
     <footer>
-        <div class="container">
-            <p>&copy; <span id="current-year"></span> <span id="footer-name">Your Name</span>. All rights reserved.</p>
+        <div class="container footer-inner">
+            <p>&copy; <span id="current-year"></span> <span id="footer-name">Hossein Hatami</span>. All rights reserved.</p>
+            <p class="footer-note">Design not affiliated with Paris Saint-Germain FC — just a fan.</p>
         </div>
     </footer>
 
@@ -82,4 +175,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-

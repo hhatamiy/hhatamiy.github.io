@@ -1,399 +1,383 @@
-// Portfolio Script
-// Handles fetching GitHub data and rendering projects
+// ============================================================================
+// Renders the page from config.js. You shouldn't need to edit this file to
+// update content — see config.js instead.
+// ============================================================================
 
-// Typing animation for hero description
-function initTypingAnimation() {
-    const typingText = document.getElementById('typing-text');
-    if (!typingText) return;
-    
-    const sentences = [
-        "Building amazing things with code",
-        "Crafting elegant solutions",
-        "Transforming ideas into reality",
-        "Writing clean, efficient code",
-        "Solving complex problems"
-    ];
-    
-    let currentSentenceIndex = 0;
-    let currentCharIndex = 0;
-    let isDeleting = false;
-    let typingSpeed = 100; // milliseconds per character
-    let deleteSpeed = 50;
-    let pauseTime = 2500; // pause after completing a sentence
-    
-    function type() {
-        const currentSentence = sentences[currentSentenceIndex];
-        
-        if (!isDeleting && currentCharIndex < currentSentence.length) {
-            // Typing forward
-            typingText.textContent = currentSentence.substring(0, currentCharIndex + 1);
-            currentCharIndex++;
-            setTimeout(type, typingSpeed);
-        } else if (!isDeleting && currentCharIndex === currentSentence.length) {
-            // Finished typing, pause then start deleting
-            setTimeout(() => {
-                isDeleting = true;
-                type();
-            }, pauseTime);
-        } else if (isDeleting && currentCharIndex > 0) {
-            // Deleting backward
-            currentCharIndex--;
-            typingText.textContent = currentSentence.substring(0, currentCharIndex);
-            setTimeout(type, deleteSpeed);
-        } else if (isDeleting && currentCharIndex === 0) {
-            // Finished deleting, move to next sentence
-            isDeleting = false;
-            currentSentenceIndex = (currentSentenceIndex + 1) % sentences.length;
-            setTimeout(type, 200); // Brief pause before starting next sentence
-        }
-    }
-    
-    // Start typing animation
-    type();
-}
+(function () {
+    "use strict";
 
-// Load personal information
-function loadPersonalInfo() {
-    const personal = config.personal;
-    
-    // Hero section
-    document.getElementById('hero-name').textContent = personal.name;
-    document.getElementById('hero-title').textContent = personal.title;
-    // Description is handled by typing animation
-    
-    // About section
-    document.getElementById('about-text').textContent = personal.about;
-    
-    // Contact section
-    const emailLink = document.getElementById('contact-email');
-    emailLink.href = `mailto:${personal.email}`;
-    emailLink.setAttribute('title', personal.email);
-    emailLink.setAttribute('aria-label', `Email: ${personal.email}`);
-    document.getElementById('contact-github').href = `https://github.com/${personal.github}`;
-    document.getElementById('contact-linkedin').href = `https://www.linkedin.com/in/${personal.linkedin}`;
-    
-    // Footer
-    document.getElementById('footer-name').textContent = personal.name;
-}
-
-// Fetch GitHub repository data
-async function fetchGitHubRepo(repoName) {
-    try {
-        console.log(`Fetching ${repoName}...`);
-        const response = await fetch(`https://api.github.com/repos/${repoName}`);
-        if (!response.ok) {
-            if (response.status === 404) {
-                console.warn(`Repository ${repoName} not found or is private`);
-            } else {
-                console.error(`Failed to fetch ${repoName}: ${response.status} ${response.statusText}`);
-            }
-            return null;
-        }
-        const data = await response.json();
-        
-        // Fetch languages
-        let languages = [];
-        try {
-            const languagesResponse = await fetch(data.languages_url);
-            if (languagesResponse.ok) {
-                const languagesData = await languagesResponse.json();
-                languages = Object.keys(languagesData);
-            }
-        } catch (langError) {
-            console.warn(`Could not fetch languages for ${repoName}:`, langError);
-        }
-        
-        return {
-            name: data.name,
-            description: data.description || 'No description available',
-            url: data.html_url,
-            homepage: data.homepage,
-            stars: data.stargazers_count,
-            forks: data.forks_count,
-            languages: languages.slice(0, 5), // Top 5 languages
-            updated: new Date(data.updated_at).toLocaleDateString(),
-            type: 'github'
-        };
-    } catch (error) {
-        console.error(`Error fetching ${repoName}:`, error);
-        return null;
-    }
-}
-
-// Render a project card
-function renderProjectCard(project) {
-    const card = document.createElement('div');
-    card.className = 'project-card';
-    
-    // Map project.type to specific tag styles and labels
-    const typeClass = (() => {
-        switch (project.type) {
-            case 'github':
-                return 'github';
-            case 'site':
-                return 'site';
-            case 'extension':
-                return 'extension';
-            case 'bot':
-                return 'bot';
-            default:
-                return 'site';
-        }
-    })();
-
-    const typeLabel = (() => {
-        switch (project.type) {
-            case 'github':
-                return 'GitHub';
-            case 'site':
-                return 'Site';
-            case 'extension':
-                return 'Extension';
-            case 'bot':
-                return 'Bot';
-            default:
-                return project.type || 'Project';
-        }
-    })();
-    
-    card.innerHTML = `
-        <div class="project-card-header">
-            <div>
-                <h3>${project.name}</h3>
-                <span class="project-card-type ${typeClass}">${typeLabel}</span>
-            </div>
-        </div>
-        <p class="project-card-description">${project.description}</p>
-        ${project.languages && project.languages.length > 0 ? `
-            <div class="project-languages">
-                ${project.languages.map(lang => `<span class="language-tag">${lang}</span>`).join('')}
-            </div>
-        ` : ''}
-        ${project.type === 'github' && (project.stars || project.forks) ? `
-            <div class="project-stats">
-                ${project.stars ? `<div class="project-stat">⭐ ${project.stars}</div>` : ''}
-                ${project.forks ? `<div class="project-stat">🍴 ${project.forks}</div>` : ''}
-            </div>
-        ` : ''}
-        <div class="project-card-footer">
-            ${project.homepage ? `
-                <a href="${project.homepage}" class="project-link" target="_blank" rel="noopener noreferrer">
-                    View Project
-                </a>
-            ` : ''}
-            ${project.url ? `
-                <a href="${project.url}" class="project-repo" target="_blank" rel="noopener noreferrer">
-                    ${project.type === 'github' ? 'View Code' : (project.repo ? 'View Repo' : 'View Project')}
-                </a>
-            ` : ''}
-            ${project.repo && project.type !== 'github' ? `
-                <a href="${project.repo}" class="project-repo" target="_blank" rel="noopener noreferrer">
-                    View Repo
-                </a>
-            ` : ''}
-        </div>
-    `;
-    
-    return card;
-}
-
-// Load and render all projects
-async function loadProjects() {
-    const projectsGrid = document.getElementById('projects-grid');
-    if (!projectsGrid) {
-        console.error('Projects grid element not found');
+    const cfg = typeof config !== "undefined" ? config : null;
+    if (!cfg) {
+        console.error("config.js failed to load — check that it's included before script.js.");
         return;
     }
-    
-    projectsGrid.innerHTML = '<div class="loading">Loading projects...</div>';
-    
-    const projects = [];
-    
-    // Fetch GitHub repositories
-    if (config && config.projects && config.projects.githubRepos && config.projects.githubRepos.length > 0) {
-        console.log(`Fetching ${config.projects.githubRepos.length} GitHub repositories...`);
-        const githubProjects = await Promise.all(
-            config.projects.githubRepos.map(repo => fetchGitHubRepo(repo))
-        );
-        const validProjects = githubProjects.filter(p => p !== null);
-        console.log(`Successfully loaded ${validProjects.length} GitHub repositories`);
-        projects.push(...validProjects);
-    }
-    
-    // Add manual projects
-    if (config && config.projects && config.projects.manual && config.projects.manual.length > 0) {
-        projects.push(...config.projects.manual.map(project => ({
-            ...project,
-            type: project.type || 'other'
-        })));
-    }
-    
-    // Render projects
-    if (projects.length === 0) {
-        projectsGrid.innerHTML = '<div class="loading">No projects found. Check the browser console for errors or edit config.js to add your projects!</div>';
-        return;
-    }
-    
-    projectsGrid.innerHTML = '';
-    projects.forEach(project => {
-        const card = renderProjectCard(project);
-        projectsGrid.appendChild(card);
-    });
-    
-    console.log(`Rendered ${projects.length} projects`);
-}
 
-// Smooth scrolling for navigation links (only in-page #section links, not placeholder "#")
-document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+    const $ = (id) => document.getElementById(id);
+
+    function escapeXML(str) {
+        return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Original jersey-sticker artwork — a simplified, hand-drawn jersey
+    // silhouette printed with a player's real name/number. No official
+    // crest, sponsor logos, or player photos are used, just kit colors.
+    function jerseySticker(sticker) {
+        if (!sticker) return "";
+        const name = escapeXML((sticker.name || "").toUpperCase());
+        const number = escapeXML(String(sticker.number != null ? sticker.number : ""));
+        return `
+            <svg viewBox="0 0 90 104" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 20 L1 14 L4 40 L18 33 Z" fill="#0a1a44" stroke="#c9a24b" stroke-width="1"/>
+                <path d="M75 20 L89 14 L86 40 L72 33 Z" fill="#0a1a44" stroke="#c9a24b" stroke-width="1"/>
+                <path d="M18 33 L14 19 Q45 6 76 19 L72 33 L69 100 L21 100 Z" fill="#0a1a44" stroke="#c9a24b" stroke-width="1.5"/>
+                <path d="M38 19 L52 19 L49.5 100 L40.5 100 Z" fill="#e31934"/>
+                <path d="M36 17 Q45 27 54 17" fill="none" stroke="#c9a24b" stroke-width="2"/>
+                <text x="45" y="52" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="9" letter-spacing="0.5" fill="#f8f9fc">${name}</text>
+                <text x="45" y="90" text-anchor="middle" font-family="Anton, sans-serif" font-size="30" fill="#f8f9fc">${number}</text>
+            </svg>`;
+    }
+
+    // ---------------------------------------------------------------
+    // HERO
+    // ---------------------------------------------------------------
+    function renderHero() {
+        $("hero-name-text").textContent = cfg.personal.name;
+        $("hero-squad-number").textContent = cfg.personal.squadNumber || "";
+        $("hero-role").textContent = cfg.personal.role;
+        $("hero-tagline").textContent = cfg.personal.tagline;
+        document.title = `${cfg.personal.name} — Portfolio`;
+
+        const resumeLink = $("hero-resume-link");
+        if (cfg.personal.resumeAvailable) {
+            resumeLink.href = cfg.personal.resumeUrl;
+            resumeLink.setAttribute("target", "_blank");
+            resumeLink.setAttribute("rel", "noopener noreferrer");
+        } else {
+            resumeLink.setAttribute("aria-disabled", "true");
+            resumeLink.href = "#contact";
+            resumeLink.textContent = "Resume Coming Soon";
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // STAT STRIP
+    // ---------------------------------------------------------------
+    function renderStats() {
+        $("stat-internships").textContent = cfg.experience.length;
+        $("stat-projects").textContent = cfg.projects.length;
+        const gradMatch = (cfg.personal.graduation || "").match(/\d{4}/);
+        $("stat-gradyear").textContent = gradMatch ? gradMatch[0] : "—";
+    }
+
+    // ---------------------------------------------------------------
+    // ABOUT
+    // ---------------------------------------------------------------
+    function renderAbout() {
+        const textEl = $("about-text");
+        cfg.about.bio.forEach((paragraph) => {
+            const p = document.createElement("p");
+            p.textContent = paragraph;
+            textEl.appendChild(p);
+        });
+
+        const attrsEl = $("about-attributes");
+        cfg.about.attributes.forEach((attr) => {
+            const row = document.createElement("div");
+            const dt = document.createElement("dt");
+            dt.textContent = attr.label;
+            const dd = document.createElement("dd");
+            dd.textContent = attr.value;
+            row.appendChild(dt);
+            row.appendChild(dd);
+            attrsEl.appendChild(row);
+        });
+
+        const stickerEl = $("about-sticker");
+        if (cfg.about.sticker) {
+            stickerEl.innerHTML = jerseySticker(cfg.about.sticker);
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // EXPERIENCE / LINEUP
+    // `experience` is listed most-recent-first, so the badge counts up
+    // from the oldest role (Cap 1) to the newest — like caps earned over
+    // a career — instead of an arbitrary jersey number.
+    // ---------------------------------------------------------------
+    function renderExperience() {
+        const list = $("experience-list");
+        const total = cfg.experience.length;
+        cfg.experience.forEach((job, index) => {
+            const item = document.createElement("article");
+            item.className = "lineup-item reveal";
+
+            const number = document.createElement("div");
+            number.className = "lineup-number";
+            const numberValue = document.createElement("span");
+            numberValue.className = "lineup-number-value";
+            numberValue.textContent = total - index;
+            const numberLabel = document.createElement("span");
+            numberLabel.className = "lineup-number-label";
+            numberLabel.textContent = "Cap";
+            number.appendChild(numberValue);
+            number.appendChild(numberLabel);
+
+            const body = document.createElement("div");
+
+            const header = document.createElement("div");
+            header.className = "lineup-header";
+
+            const roleGroup = document.createElement("div");
+            const role = document.createElement("span");
+            role.className = "lineup-role";
+            role.textContent = job.role + " — ";
+            const org = document.createElement("span");
+            org.className = "lineup-org";
+            org.textContent = job.org;
+            roleGroup.appendChild(role);
+            roleGroup.appendChild(org);
+
+            const dates = document.createElement("span");
+            dates.className = "lineup-dates";
+            dates.textContent = `${job.start} – ${job.end}`;
+
+            header.appendChild(roleGroup);
+            header.appendChild(dates);
+
+            const bullets = document.createElement("ul");
+            bullets.className = "lineup-bullets";
+            job.bullets.forEach((bullet) => {
+                const li = document.createElement("li");
+                li.textContent = bullet;
+                bullets.appendChild(li);
             });
-        }
-    });
-});
 
-// Neural network background: nodes + links, cursor always connects
-function initNeuralNetwork() {
-    const canvas = document.getElementById('neural-canvas');
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
-    let mouse = { x: null, y: null };
-    let rafId = null;
-
-    const nodeCount = 160;
-    const linkDistance = 150;
-    const cursorLinkDistance = 165;
-    const nodeRadius = 1.5;
-
-    // Semi-random node positions (stable, spreads nicely)
-    const nodes = [];
-    const cols = Math.ceil(Math.sqrt(nodeCount * (width / height)));
-    const rows = Math.ceil(nodeCount / cols);
-    const stepX = width / (cols + 1);
-    const stepY = height / (rows + 1);
-    const baseSpeed = 0.4;
-    for (let i = 0; i < nodeCount; i++) {
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        nodes.push({
-            x: stepX * (col + 1) + (Math.random() - 0.5) * stepX * 0.6,
-            y: stepY * (row + 1) + (Math.random() - 0.5) * stepY * 0.6,
-            vx: (Math.random() - 0.5) * baseSpeed * 2,
-            vy: (Math.random() - 0.5) * baseSpeed * 2
+            body.appendChild(header);
+            body.appendChild(bullets);
+            item.appendChild(number);
+            item.appendChild(body);
+            list.appendChild(item);
         });
     }
 
-    function drawLink(x1, y1, x2, y2, alpha = 1, isCursor = false) {
-        const d = Math.hypot(x2 - x1, y2 - y1);
-        const maxD = isCursor ? cursorLinkDistance : linkDistance;
-        const opacity = alpha * (1 - d / maxD) * (isCursor ? 0.95 : 0.55);
-        ctx.strokeStyle = isCursor
-            ? `rgba(56, 189, 248, ${opacity})`
-            : `rgba(148, 163, 184, ${opacity})`;
-        ctx.lineWidth = isCursor ? 1.2 : 0.8;
-        ctx.setLineDash([4, 6]);
-        ctx.lineDashOffset = -(performance.now() * 0.15) % 10;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-        ctx.setLineDash([]);
-    }
+    // ---------------------------------------------------------------
+    // PROJECTS
+    // ---------------------------------------------------------------
+    function renderProjects() {
+        const grid = $("projects-grid");
+        cfg.projects.forEach((project, index) => {
+            const card = document.createElement("article");
+            card.className = "project-card reveal";
 
-    function drawNode(x, y, radius, isCursor = false) {
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = isCursor
-            ? 'rgba(56, 189, 248, 0.9)'
-            : 'rgba(148, 163, 184, 0.6)';
-        ctx.fill();
-        if (isCursor) {
-            ctx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-        }
-    }
+            const media = document.createElement("div");
+            media.className = "project-media";
 
-    function frame() {
-        ctx.clearRect(0, 0, width, height);
-
-        // Update node positions
-        for (const n of nodes) {
-            n.x += n.vx;
-            n.y += n.vy;
-            if (n.x < 0 || n.x > width) n.vx *= -1;
-            if (n.y < 0 || n.y > height) n.vy *= -1;
-            n.x = Math.max(0, Math.min(width, n.x));
-            n.y = Math.max(0, Math.min(height, n.y));
-        }
-
-        // Draw links between nodes
-        for (let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-                const a = nodes[i];
-                const b = nodes[j];
-                const d = Math.hypot(b.x - a.x, b.y - a.y);
-                if (d < linkDistance) drawLink(a.x, a.y, b.x, b.y);
+            let mediaEl;
+            if (project.media && project.media.type === "video") {
+                mediaEl = document.createElement("video");
+                mediaEl.src = project.media.src;
+                mediaEl.setAttribute("controls", "");
+                mediaEl.setAttribute("muted", "");
+                mediaEl.setAttribute("playsinline", "");
+            } else if (project.media) {
+                mediaEl = document.createElement("img");
+                mediaEl.src = project.media.src;
+                mediaEl.alt = project.media.alt || project.name;
+                mediaEl.loading = "lazy";
             }
-        }
+            if (mediaEl) media.appendChild(mediaEl);
 
-        // Draw links from nodes to cursor and cursor node
-        if (mouse.x != null && mouse.y != null) {
-            for (const n of nodes) {
-                const d = Math.hypot(mouse.x - n.x, mouse.y - n.y);
-                if (d < cursorLinkDistance) drawLink(n.x, n.y, mouse.x, mouse.y, 1, true);
+            let badge = null;
+            if (project.sticker) {
+                badge = document.createElement("div");
+                badge.className = "jersey-sticker" + (index % 2 === 1 ? " jersey-sticker--left" : "");
+                badge.setAttribute("aria-hidden", "true");
+                badge.innerHTML = jerseySticker(project.sticker);
             }
-            drawNode(mouse.x, mouse.y, nodeRadius * 2, true);
+
+            const body = document.createElement("div");
+            body.className = "project-body";
+
+            const header = document.createElement("div");
+            header.className = "project-header";
+            const name = document.createElement("h3");
+            name.className = "project-name";
+            name.textContent = project.name;
+            const dates = document.createElement("span");
+            dates.className = "project-dates";
+            dates.textContent = project.dates || "";
+            header.appendChild(name);
+            header.appendChild(dates);
+
+            const desc = document.createElement("p");
+            desc.className = "project-description";
+            desc.textContent = project.description;
+
+            const tagList = document.createElement("ul");
+            tagList.className = "tag-list";
+            (project.tags || []).forEach((tag) => {
+                const li = document.createElement("li");
+                li.className = "tag";
+                li.textContent = tag;
+                tagList.appendChild(li);
+            });
+
+            const links = document.createElement("div");
+            links.className = "project-links";
+            if (project.links && project.links.live) {
+                const live = document.createElement("a");
+                live.href = project.links.live;
+                live.target = "_blank";
+                live.rel = "noopener noreferrer";
+                live.textContent = "Live Site ↗";
+                links.appendChild(live);
+            }
+            if (project.links && project.links.repo) {
+                const repo = document.createElement("a");
+                repo.href = project.links.repo;
+                repo.target = "_blank";
+                repo.rel = "noopener noreferrer";
+                repo.textContent = "Source ↗";
+                links.appendChild(repo);
+            }
+
+            body.appendChild(header);
+            body.appendChild(desc);
+            body.appendChild(tagList);
+            body.appendChild(links);
+
+            card.appendChild(media);
+            if (badge) card.appendChild(badge);
+            card.appendChild(body);
+            grid.appendChild(card);
+        });
+    }
+
+    // ---------------------------------------------------------------
+    // SKILLS
+    // ---------------------------------------------------------------
+    function renderSkills() {
+        const grid = $("skills-grid");
+        Object.entries(cfg.skills).forEach(([category, items]) => {
+            const group = document.createElement("div");
+            group.className = "skill-group reveal";
+
+            const heading = document.createElement("h3");
+            heading.textContent = category;
+
+            const list = document.createElement("ul");
+            list.className = "tag-list";
+            items.forEach((item) => {
+                const li = document.createElement("li");
+                li.className = "tag";
+                li.textContent = item;
+                list.appendChild(li);
+            });
+
+            group.appendChild(heading);
+            group.appendChild(list);
+            grid.appendChild(group);
+        });
+    }
+
+    // ---------------------------------------------------------------
+    // EDUCATION
+    // ---------------------------------------------------------------
+    function renderEducation() {
+        const edu = cfg.education;
+        $("edu-school").textContent = edu.school;
+        $("edu-degree").textContent = edu.degree;
+        $("edu-grad").textContent = edu.graduation;
+
+        const coursework = $("edu-coursework");
+        edu.coursework.forEach((course) => {
+            const li = document.createElement("li");
+            li.className = "tag";
+            li.textContent = course;
+            coursework.appendChild(li);
+        });
+
+        const extracurriculars = $("edu-extracurriculars");
+        edu.extracurriculars.forEach((item) => {
+            const li = document.createElement("li");
+            li.textContent = item;
+            extracurriculars.appendChild(li);
+        });
+
+        const stickerEl = $("education-sticker");
+        if (edu.sticker) {
+            stickerEl.innerHTML = jerseySticker(edu.sticker);
         }
-
-        // Draw nodes
-        for (const n of nodes) drawNode(n.x, n.y, nodeRadius);
-
-        rafId = requestAnimationFrame(frame);
     }
 
-    document.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-    });
-    document.addEventListener('mouseleave', () => {
-        mouse.x = null;
-        mouse.y = null;
-    });
-    window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-    });
-
-    frame();
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-    // Set current year in footer
-    const currentYearEl = document.getElementById('current-year');
-    if (currentYearEl) {
-        currentYearEl.textContent = new Date().getFullYear();
+    // ---------------------------------------------------------------
+    // CONTACT
+    // ---------------------------------------------------------------
+    function renderContact() {
+        $("contact-email").href = `mailto:${cfg.personal.email}`;
+        $("contact-github").href = `https://github.com/${cfg.personal.github}`;
+        $("contact-linkedin").href = `https://linkedin.com/in/${cfg.personal.linkedin}`;
+        $("contact-location").textContent = cfg.personal.location;
+        $("footer-name").textContent = cfg.personal.name;
+        $("current-year").textContent = new Date().getFullYear();
     }
-    
-    // Check if config is loaded
-    if (typeof config === 'undefined') {
-        console.error('Config not loaded! Make sure config.js is loaded before script.js');
-        return;
-    }
-    
-    console.log('Initializing portfolio...');
-    loadPersonalInfo();
-    loadProjects();
-    initTypingAnimation();
-    initNeuralNetwork();
-});
 
+    // ---------------------------------------------------------------
+    // NAV TOGGLE (mobile)
+    // ---------------------------------------------------------------
+    function setupNavToggle() {
+        const toggle = $("nav-toggle");
+        const links = $("nav-links");
+        toggle.addEventListener("click", () => {
+            const isOpen = links.classList.toggle("is-open");
+            toggle.classList.toggle("is-open", isOpen);
+            toggle.setAttribute("aria-expanded", String(isOpen));
+        });
+        links.querySelectorAll("a").forEach((link) => {
+            link.addEventListener("click", () => {
+                links.classList.remove("is-open");
+                toggle.classList.remove("is-open");
+                toggle.setAttribute("aria-expanded", "false");
+            });
+        });
+    }
+
+    // ---------------------------------------------------------------
+    // SCROLL REVEAL
+    // ---------------------------------------------------------------
+    function setupScrollReveal() {
+        const targets = document.querySelectorAll(".reveal");
+        if (!("IntersectionObserver" in window) || targets.length === 0) {
+            targets.forEach((t) => t.classList.add("is-visible"));
+            return;
+        }
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.12 }
+        );
+        targets.forEach((t) => observer.observe(t));
+    }
+
+    // ---------------------------------------------------------------
+    // INIT
+    // ---------------------------------------------------------------
+    document.addEventListener("DOMContentLoaded", () => {
+        renderHero();
+        renderStats();
+        renderAbout();
+        renderExperience();
+        renderProjects();
+        renderSkills();
+        renderEducation();
+        renderContact();
+        setupNavToggle();
+        setupScrollReveal();
+    });
+})();

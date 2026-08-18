@@ -1,150 +1,115 @@
 # Portfolio Website
 
-A modern, responsive portfolio website that automatically fetches and displays your GitHub repositories and custom projects.
+A PSG-inspired personal portfolio. Everything you're likely to want to change
+lives in one file: **`config.js`**. You don't need to know how to code (or
+use AI) to update it.
 
-## Features
+## Editing your info (text)
 
-- 🎨 Modern, clean design with smooth animations
-- 📱 Fully responsive (mobile, tablet, desktop)
-- 🔄 Automatically fetches GitHub repository data via API
-- ⚙️ Easy configuration via `config.js`
-- 🚀 Ready for GitHub Pages deployment
+1. Open `config.js` in any text editor (even TextEdit/Notepad works, though
+   a code editor like VS Code makes it easier to avoid typos).
+2. Find the section you want to change — they're labeled with comments like
+   `// PERSONAL`, `// EXPERIENCE`, `// PROJECTS`, etc.
+3. Edit the text between the quotes `" "`. Don't delete the quotes, commas,
+   or curly braces `{ }` — just change the words inside them.
+4. Save the file and refresh the page in your browser.
 
-## Setup Instructions
+## Adding or changing a project screenshot/video
 
-### 1. Configure Your Personal Information
+Each project in `config.js` has a `media` block, e.g.:
 
-Edit `config.js` and update the `personal` object with your information:
-
-```javascript
-personal: {
-    name: "Hossein",
-    title: "Software Developer",
-    description: "Building amazing things with code",
-    about: "Purdue CS Student Graduating in Spring 2028. Aspiring Software Developer",
-    email: "hhatamiy@gmail.com",
-    github: "hhatamiy",
-    linkedin: "hhatamiy"
-}
+```js
+media: {
+    type: "image",
+    src: "assets/projects/world-cup-simulator/cover.svg",
+    alt: "Soccer World Cup Simulator screenshot placeholder",
+},
 ```
 
-### 2. Add Your Projects
+**To swap the screenshot:**
 
-#### Adding GitHub Repositories
+1. Save your new screenshot (PNG or JPG) somewhere on your computer.
+2. Put it into the matching folder, e.g. `assets/projects/world-cup-simulator/`.
+   You can name it anything — a good option is `cover.png`.
+3. In `config.js`, update `src` to point at the new filename, e.g.
+   `"assets/projects/world-cup-simulator/cover.png"`.
+4. Update `alt` to a short description of what's in the image (this is read
+   aloud by screen readers, and shown if the image fails to load).
 
-In `config.js`, add your repository names to the `githubRepos` array:
+**To use a video instead of a screenshot:**
 
-```javascript
-githubRepos: [
-    "hhatamiy/WCS",
-    "hhatamiy/grade-checker"
-    "hhatamiy/soccer-rules"
-]
-```
+1. Put your video file (`.mp4` works everywhere) in the project's folder.
+2. Change `type: "image"` to `type: "video"`.
+3. Point `src` at the video file, e.g. `"assets/projects/my-project/demo.mp4"`.
 
-The script will automatically fetch repository information including:
-- Description
-- Stars and forks count
-- Programming languages
-- Links to repository and homepage (if available)
+## Adding a brand-new project
 
-#### Adding Manual Projects (Sites, Apps, etc.)
+1. In `config.js`, find the `projects:` array.
+2. Copy one whole project block — from the opening `{` to the closing `},`.
+3. Paste it right below, and edit every value inside.
+4. Create a new folder for its media at `assets/projects/<your-slug>/` and
+   drop your screenshot/video in there, updating `media.src` to match.
 
-Add projects that aren't on GitHub to the `manual` array:
+There's also a commented-out example template at the bottom of the
+`projects` array in `config.js` you can copy from.
 
-```javascript
-manual: [
-    {
-        name: "My Portfolio Site",
-        description: "A beautiful portfolio website",
-        type: "site", // "site", "app", or "other"
-        url: "https://example.com",
-        repo: "https://github.com/username/repo", // Optional
-        languages: ["React", "JavaScript", "CSS"]
-    }
-]
-```
+## Adding your resume as a downloadable file
 
-### 3. Run Locally
+The "Download Resume" button is turned off until you add a resume:
 
-You can preview your portfolio locally before deploying. Here are several options:
+1. Save your resume as a PDF.
+2. Place it at `assets/resume.pdf` (that exact path, or update
+   `resumeUrl` in `config.js` if you'd rather use a different filename).
+3. In `config.js`, set `resumeAvailable: true`.
+4. **Heads up:** most resumes list a phone number. Double check what's on
+   the PDF before publishing it, since anything in `assets/` becomes
+   publicly downloadable once the site is live.
 
-#### Option 1: Using npm (Recommended)
+## Running the site locally
 
-1. Run the local server:
-   ```bash
-   npm start
-   ```
-   This will automatically open your browser at `http://localhost:8080`
-
-   Or just start the server without opening:
-   ```bash
-   npm run serve
-   ```
-
-#### Option 2: Using Python
-
-If you have Python installed:
-
-**Python 3:**
 ```bash
-python3 -m http.server 8080
+npm start
 ```
 
-**Python 2:**
+This opens `http://localhost:8080` in your browser. Or just open
+`index.html` directly in a browser — everything here is static, no build
+step required.
+
+## Deploying to GitHub Pages
+
 ```bash
-python -m SimpleHTTPServer 8080
+git add .
+git commit -m "Update portfolio"
+git push
 ```
 
-Then open `http://localhost:8080` in your browser.
+Then in the repo's Settings → Pages, make sure the source is set to the
+`main` branch. Your site will be live at `https://<your-username>.github.io`.
 
-#### Option 3: Using Node.js http-server
+## File structure
 
-If you have Node.js installed but don't want to use npm scripts:
-```bash
-npx http-server -p 8080 -o
-```
+- `index.html` — page structure/sections (shouldn't need edits for content changes)
+- `styles.css` — all styling (colors, fonts, layout)
+- `script.js` — renders the page using the data in `config.js`
+- `config.js` — **your content lives here**
+- `assets/` — images, videos, favicon
 
-#### Option 4: Using VS Code Live Server
+## Editing the jersey stickers
 
-If you use VS Code, install the "Live Server" extension and right-click on `index.html` → "Open with Live Server"
-
-#### Option 5: Direct File Open (Limited)
-
-You can open `index.html` directly in your browser, but note:
-- GitHub API requests may fail due to CORS restrictions
-- Some features may not work properly
-- **Recommended**: Use one of the server options above
-
-### 4. Deploy to GitHub Pages
-
-1. Commit and push your changes:
-   ```bash
-   git add .
-   git commit -m "Add portfolio website"
-   git push
-   ```
-
-2. Go to your repository settings on GitHub
-3. Navigate to "Pages" in the left sidebar
-4. Under "Source", select the branch (usually `main` or `master`)
-5. Your site will be available at `https://yourusername.github.io`
-
-## File Structure
-
-- `index.html` - Main HTML structure
-- `styles.css` - All styling and responsive design
-- `script.js` - JavaScript for fetching GitHub data and rendering projects
-- `config.js` - Configuration file for personal info and projects
-
-## Customization
-
-- **Colors**: Edit the CSS variables in `styles.css` (`:root` section)
-- **Layout**: Modify the HTML structure in `index.html`
-- **Styling**: Update `styles.css` to match your preferences
+The small jersey graphics pinned to the About card, Education card, and
+project cards come from `sticker: { name, number }` blocks in `config.js`
+(search for `sticker:`). They're original artwork generated in code — no
+real photos, no official crest or sponsor logos — just a name and number
+printed on a stylized kit silhouette. Edit the name/number, or delete a
+`sticker` block to remove that card's sticker.
 
 ## Notes
 
-- GitHub API has rate limits (60 requests/hour for unauthenticated requests)
-- If you have many repositories, consider using a GitHub Personal Access Token
-- The site works entirely client-side - no backend required
+- This design is a personal fan project inspired by Paris Saint-Germain's
+  colors, crest style, and current squad — it is not affiliated with or
+  endorsed by the club.
+- The star icon used throughout (background pattern, logo, bullet points)
+  is defined once at `assets/star.svg` — edit that file to change the
+  shape everywhere it's used.
+- Colors and fonts are defined as CSS variables at the top of `styles.css`
+  under `:root` if you want to adjust the palette.
