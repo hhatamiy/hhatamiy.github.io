@@ -198,8 +198,8 @@ const config = {
       },
       media: {
         type: "image",
-        src: "assets/projects/grade-checker/cover.svg",
-        alt: "Brightspace / Canvas Grade Checker screenshot placeholder",
+        src: "assets/projects/grade-checker/cover.png",
+        alt: "Grade Tracker app showing overall average and a list of Brightspace courses with grades",
       },
       sticker: { name: "MARQUINHOS", number: 5 },
     },

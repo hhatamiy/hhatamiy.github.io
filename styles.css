@@ -512,6 +512,14 @@ section { padding: 96px 0; }
     object-fit: cover;
 }
 
+/* Tall/portrait screenshots (e.g. mobile app views) would lose most of
+   their content to a 16:9 crop, so they're shown uncropped instead —
+   script.js adds this class automatically based on image dimensions. */
+.project-media.is-portrait img {
+    object-fit: contain;
+    padding: 10px;
+}
+
 /* Original jersey-sticker artwork (not real player photos) pinned to the
    corner of a card — About, Education, and Project cards all use this. */
 .jersey-sticker {

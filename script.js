@@ -187,6 +187,13 @@
                 mediaEl.src = project.media.src;
                 mediaEl.alt = project.media.alt || project.name;
                 mediaEl.loading = "lazy";
+                const markPortrait = () => {
+                    if (mediaEl.naturalHeight > mediaEl.naturalWidth) {
+                        media.classList.add("is-portrait");
+                    }
+                };
+                mediaEl.addEventListener("load", markPortrait);
+                if (mediaEl.complete) markPortrait();
             }
             if (mediaEl) media.appendChild(mediaEl);
 
