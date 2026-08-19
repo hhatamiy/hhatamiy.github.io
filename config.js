@@ -135,6 +135,11 @@ const config = {
   // media.type: "image" or "video"
   // media.src:  path to the file (put files in assets/projects/<slug>/)
   //
+  // status: omit for a normal live project. Set to "archived" for a
+  // project you're no longer running/paying for — it shows an "Archived"
+  // badge and the card links to the repo instead of the (likely dead)
+  // live URL.
+  //
   // To add a new project, copy one whole { ... } block below (including
   // the surrounding commas) and edit the values.
   // --------------------------------------------------------------------
@@ -144,11 +149,14 @@ const config = {
       name: "Soccer World Cup Simulator & Predictor",
       dates: "November 2025 – January 2026",
       description:
-        "A web platform that lets users simulate and predict World Cup matches, powered by a backend that computes custom probability and odds models for each matchup.",
+        "A web platform that let users simulate and predict World Cup matches, powered by a backend that computed custom probability and odds models for each matchup.",
       tags: ["Web App", "Probability Modeling", "JavaScript"],
+      // Backend was taken down to stop the hosting cost — see the repo
+      // for the code instead of a live demo.
+      status: "archived",
       links: {
         live: "https://worldcupsim26.vercel.app/simulator",
-        repo: "",
+        repo: "https://github.com/hhatamiy/WCS",
       },
       media: {
         type: "image",

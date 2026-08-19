@@ -542,8 +542,21 @@ section { padding: 96px 0; }
     margin-bottom: 6px;
 }
 
+.project-name-group { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .project-name { font-size: 1.15rem; font-weight: 700; color: var(--navy-800); }
 .project-dates { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+
+.project-status {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    background: rgba(10, 26, 68, 0.06);
+    border: 1px solid var(--border-soft);
+    border-radius: 999px;
+    padding: 2px 9px;
+}
 
 .project-description { color: var(--ink-soft); font-size: 0.95rem; margin-bottom: 16px; }
 

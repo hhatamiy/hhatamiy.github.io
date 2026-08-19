@@ -53,6 +53,14 @@ media: {
 There's also a commented-out example template at the bottom of the
 `projects` array in `config.js` you can copy from.
 
+## Marking a project as archived
+
+If you've taken a project's backend/live deployment down (e.g. to stop
+paying for hosting), add `status: "archived"` to that project's block in
+`config.js`. The card will show an "Archived" badge and link to the repo
+instead of the dead live URL. Remove the line (or leave it off) for any
+project that's still live.
+
 ## Adding your resume as a downloadable file
 
 The "Download Resume" button is turned off until you add a resume:

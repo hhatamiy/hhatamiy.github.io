@@ -200,13 +200,22 @@
 
             const header = document.createElement("div");
             header.className = "project-header";
+            const nameGroup = document.createElement("div");
+            nameGroup.className = "project-name-group";
             const name = document.createElement("h3");
             name.className = "project-name";
             name.textContent = project.name;
+            nameGroup.appendChild(name);
+            if (project.status === "archived") {
+                const statusBadge = document.createElement("span");
+                statusBadge.className = "project-status";
+                statusBadge.textContent = "Archived";
+                nameGroup.appendChild(statusBadge);
+            }
             const dates = document.createElement("span");
             dates.className = "project-dates";
             dates.textContent = project.dates || "";
-            header.appendChild(name);
+            header.appendChild(nameGroup);
             header.appendChild(dates);
 
             const desc = document.createElement("p");
@@ -224,7 +233,9 @@
 
             const links = document.createElement("div");
             links.className = "project-links";
-            if (project.links && project.links.live) {
+            // Archived projects skip the (likely dead) live link and lead
+            // with the repo instead.
+            if (project.status !== "archived" && project.links && project.links.live) {
                 const live = document.createElement("a");
                 live.href = project.links.live;
                 live.target = "_blank";
