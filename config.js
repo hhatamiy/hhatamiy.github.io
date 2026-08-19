@@ -35,7 +35,7 @@ const config = {
     // Set to true once you've added your own resume PDF at assets/resume.pdf
     // (left out by default since resumes usually list a phone number you
     // may not want published on a public site).
-    resumeAvailable: false,
+    resumeAvailable: true,
     resumeUrl: "assets/resume.pdf",
   },
 
@@ -160,8 +160,8 @@ const config = {
       },
       media: {
         type: "image",
-        src: "assets/projects/world-cup-simulator/cover.svg",
-        alt: "Soccer World Cup Simulator screenshot placeholder",
+        src: "assets/projects/world-cup-simulator/cover.jpg",
+        alt: "Soccer World Cup Simulator group stage screen",
       },
       // Jersey sticker pinned to this card's corner — change name/number,
       // or delete this object to fall back to a plain corner accent.
@@ -180,8 +180,8 @@ const config = {
       },
       media: {
         type: "image",
-        src: "assets/projects/soccer-rules/cover.svg",
-        alt: "Soccer Rules website screenshot placeholder",
+        src: "assets/projects/soccer-rules/cover.jpg",
+        alt: "Soccer Rules Explained homepage",
       },
       sticker: { name: "HAKIMI", number: 2 },
     },
