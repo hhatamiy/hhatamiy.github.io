@@ -185,6 +185,24 @@ const config = {
       },
       sticker: { name: "HAKIMI", number: 2 },
     },
+    {
+      slug: "grade-checker",
+      name: "Brightspace / Canvas Grade Checker",
+      dates: "",
+      description:
+        "A browser extension that checks and surfaces student grades from the Brightspace and Canvas platforms.",
+      tags: ["Browser Extension", "JavaScript", "Automation"],
+      links: {
+        live: "",
+        repo: "https://github.com/hhatamiy/grade-checker",
+      },
+      media: {
+        type: "image",
+        src: "assets/projects/grade-checker/cover.svg",
+        alt: "Brightspace / Canvas Grade Checker screenshot placeholder",
+      },
+      sticker: { name: "MARQUINHOS", number: 5 },
+    },
 
     // Example of a not-yet-live project, and a video instead of an image —
     // copy this block to add your own. Just delete the leading "//" on

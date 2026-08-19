@@ -25,6 +25,9 @@
         if (!sticker) return "";
         const name = escapeXML((sticker.name || "").toUpperCase());
         const number = escapeXML(String(sticker.number != null ? sticker.number : ""));
+        // Longer names need a smaller font to stay within the jersey's
+        // printed width instead of spilling past its edges.
+        const nameFontSize = name.length > 9 ? 6.5 : name.length > 7 ? 7.5 : 9;
         return `
             <svg viewBox="0 0 90 104" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 20 L1 14 L4 40 L18 33 Z" fill="#0a1a44" stroke="#c9a24b" stroke-width="1"/>
@@ -32,7 +35,7 @@
                 <path d="M18 33 L14 19 Q45 6 76 19 L72 33 L69 100 L21 100 Z" fill="#0a1a44" stroke="#c9a24b" stroke-width="1.5"/>
                 <path d="M38 19 L52 19 L49.5 100 L40.5 100 Z" fill="#e31934"/>
                 <path d="M36 17 Q45 27 54 17" fill="none" stroke="#c9a24b" stroke-width="2"/>
-                <text x="45" y="52" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="9" letter-spacing="0.5" fill="#f8f9fc">${name}</text>
+                <text x="45" y="52" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="${nameFontSize}" letter-spacing="0.5" fill="#f8f9fc">${name}</text>
                 <text x="45" y="90" text-anchor="middle" font-family="Anton, sans-serif" font-size="30" fill="#f8f9fc">${number}</text>
             </svg>`;
     }
